@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+        a:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="showUsersDiv" class="container" style="width: 80%">
+        <h2 class="text-center mb-3">员工列表</h2>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>员工账号</th>
+                    <th>员工姓名</th>
+                    <th>员工性别</th>
+                    <th>员工职位</th>
+                    <th>操作栏</th>
+                </tr>
+            </thead>
+            <tbody v-if="result.code==0">
+                <tr v-for="user in userList" v-bind:id="user.userid" >
+                    <td>{{ user.useraccount }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.usersex }}</td>
+                    <td>{{ user.rolename}}</td>
+                    <td>
+                        <a style="color: #007BFF;" v-on:click="updateUser(user.userid)">修改</a>
+                        <a style="color: #007BFF;" v-on:click="deleteUser(user.userid)" class="offset-1">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- 分页 -->
+        <ul class="pagination offset-3 col-6" id="pagination1">
+            <li class="page-item" v-bind:class="{disabled:currentPage<=1}"><a class="page-link" v-on:click="change(1)">首页</a></li>
+            <li class="page-item" v-bind:class="{disabled:currentPage<=1}"><a class="page-link" v-on:click="change(currentPage-1)">上一页</a></li>
+            <li v-for="n in totalPage" v-bind:class="{active:n==currentPage}" class="page-item" v-show="(currentPage<3 && n<=5) || (currentPage>totalPage-2 && n>=totalPage-4) || (currentPage>=3 && currentPage<=totalPage-2 && n<=currentPage+2 && n>=currentPage-2)"><a v-on:click="change(n)" class="page-link" >{{ n }}</a></li>
+            <li class="page-item" v-bind:class="{disabled:currentPage>=totalPage}"><a class="page-link" v-on:click="change(currentPage+1)">下一页</a></li>
+            <li class="page-item" v-bind:class="{disabled:currentPage>=totalPage}"><a class="page-link" v-on:click="change(totalPage)">末页</a></li>
+        </ul>
+        <!-- 查询失败时显示 -->
+        <h4 class="text-center text-muted" v-if="result.code != 0">{{ result.message }}</h4>
+    </div>
+</body>
+<script>
+    var usrVM = new Vue({
+        el:'#showUsersDiv',
+        data:{
+            result:'',
+            userList:'',
+            totalCount:'',
+            pageSize:6,
+            currentPage:1
+        },
+        computed:{
+            totalPage:function(){
+                return this.totalCount%this.pageSize==0?parseInt(this.totalCount/this.pageSize):parseInt(this.totalCount/this.pageSize)+1;
+            }
+        },
+        methods:{
+            //修改用户
+            updateUser:function (userid) {
+                $('#homePage').load('/goUpdateUser',{userid:userid});
+            },
+            //分页
+            change:function (n) {
+                this.currentPage = n;
+                this.showUsers(this);
+            },
+            //删除用户
+            deleteUser:function (userid) {
+                var _self = this;
+                if(confirm("确认删除？")){
+                    $.post("/deleteUser.do",{userid:userid},function (res) {
+                        if(res.code==0){
+                            _self.change(_self.currentPage);
+                            _self.totalCount--;
+                        }else {
+                            alert("删除失败:"+res.message);
+                        }
+                    })
+                }
+            }
+        },
+        beforeCreate:function () {
+            var _self = this;
+            _self.pageSize = 6;
+            $.post("/showAllUsers.do",{pageSize:_self.pageSize},function (res) {
+                _self.result = res;
+                if(res.code==0){
+                    _self.userList = res.data;
+                }
+            });
+            $.get("/userCount.do",function (res) {
+                _self.totalCount = res.data;
+            });
+        }
+    });
+    Vue.prototype.showUsers = function (_self) {
+        $.post("/showAllUsers.do",{currentPage:_self.currentPage,pageSize:_self.pageSize},function (res) {
+            _self.result = res;
+            if(res.code==0){
+                _self.userList = res.data;
+            }
+        });
+    }
+</script>
+</html>

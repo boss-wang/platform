@@ -1,0 +1,16 @@
+server:
+  port: 8888
+spring:
+  datasource:
+    druid:
+      password: Dtw10781
+      username: chao
+      url: jdbc:mysql:///platformdb
+      driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+mybatis:
+  mapper-locations: classpath:mybatis/*.xml
+  type-aliases-package: com.chao.platform.entity

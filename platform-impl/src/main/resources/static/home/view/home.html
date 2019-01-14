@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" href="/commons/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <nav id="home-nav" class="navbar fixed-top navbar-expand-sm bg-light navbar-light">
+        <a href="#" class="navbar-brand">
+            <img src="/commons/img/logo-login.png" alt="大田物流" style="width: 150px;">
+        </a>
+        <ul class="navbar-nav" style="margin: 0 auto;">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">员工管理</a>
+                <div class="dropdown-menu">
+                    <a onclick="addUser()" class="dropdown-item">添加员工</a>
+                    <a onclick="showUsers()" class="dropdown-item">查看员工</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown"  href="#">客户管理</a>
+                <div class="dropdown-menu">
+                    <a href="#" class="dropdown-item">添加客户</a>
+                    <a href="#" class="dropdown-item">更改客户信息</a>
+                    <a href="#" class="dropdown-item">客户审核</a>
+                    <a href="#" class="dropdown-item">查看客户留言</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown"  href="#">供应商管理</a>
+                <div class="dropdown-menu">
+                    <a href="#" class="dropdown-item">添加供应商</a>
+                    <a href="#" class="dropdown-item">更改供应商信息</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown"  href="#">订单管理</a>
+                <div class="dropdown-menu">
+                    <a href="#" class="dropdown-item">新建订单</a>
+                    <a href="#" class="dropdown-item">查看订单</a>
+                    <a href="#" class="dropdown-item">散客订单</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline" >
+            <input class="form-control" style="width: 70%;" type="text" placeholder="Search">
+            <button class="btn btn-success">Search</button>
+        </form>
+    </nav>
+    <div id="homePage" style="margin-top: 100px;"></div>
+</body>
+<script src="/commons/js/jquery-3.2.1.min.js"></script>
+<script src="/commons/js/bootstrap.min.js"></script>
+<script src="/commons/js/vue.min.js"></script>
+<script src="../js/homepage.js"></script>
+<script>
+
+</script>
+</html>

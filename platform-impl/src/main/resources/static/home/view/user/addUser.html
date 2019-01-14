@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div id="addUserDiv" class="container" style="width: 60%">
+        <h2 class="text-center mb-3">添加员工</h2>
+        <form id="frm">
+            <input type="hidden" name="userstatus" value="1">
+            <div class="row">
+                <div class="input-group mb-3 col-6 offset-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">账&nbsp;&nbsp;&nbsp;号</label>
+                    </div>
+                    <input v-model="userAccount" name="useraccount" type="text" class="form-control" placeholder="请输入员工账号" >
+                </div>
+                <div class="col-3">
+                    <span class="text-danger">{{ accountTip }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group mb-3 col-6 offset-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">姓&nbsp;&nbsp;&nbsp;名</label>
+                    </div>
+                    <input v-model="userName" name="username" type="text" class="form-control" placeholder="请输入员工姓名">
+                </div>
+                <div class="col-3">
+                    <span class="text-danger">{{ nameTip }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group mb-3 col-6 offset-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">性&nbsp;&nbsp;&nbsp;别</label>
+                    </div>
+                    <select name="usersex" class="form-control">
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group mb-3 col-6 offset-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">职&nbsp;&nbsp;&nbsp;位</label>
+                    </div>
+                    <select name="roleid" class="form-control">
+                        <option v-for="role in roles" :value="role.roleid">{{role.rolename}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group mb-3 col-6 offset-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">密&nbsp;&nbsp;&nbsp;码</label>
+                    </div>
+                    <input v-model="userPwd" name="userpwd" type="password" class="form-control" placeholder="员工登录密码" />
+                </div>
+                <div class="col-3">
+                    <span class="text-danger">{{ pwdTip }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group col-6 offset-3">
+                    <input type="button" class="btn btn-primary col-5" v-on:click="addUser" value="确认添加" />
+                    <input type="reset" class="btn btn-secondary col-5 offset-2 " value="重新填写"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    var roleVM = new Vue({
+        el: '#addUserDiv',
+        data:{
+            roles:'',
+            userAccount:'',
+            userName:'',
+            userPwd:'',
+            accountTip:'',
+            nameTip:'',
+            pwdTip:'',
+            dataReady:true
+        },
+        methods:{
+            addUser:function () {
+                var _self = this;
+                _self.accountTip='';
+                _self.nameTip='';
+                _self.pwdTip='';
+                _self.dataReady=true;
+                if(!_self.userAccount){
+                    _self.accountTip='请输入员工账号';
+                    _self.dataReady=false;
+                }
+                if(!_self.userName){
+                    _self.nameTip='请输入员工姓名';
+                    _self.dataReady=false;
+                }
+                if(!_self.userPwd){
+                    _self.pwdTip='请输入密码';
+                    _self.dataReady=false;
+                }
+                $.ajax({
+                    url: "/existAccount.do",
+                    type:"post",
+                    data:{
+                        useraccount:_self.userAccount
+                    },
+                    async: false,
+                    success:function (res) {
+                        if(res.code!=1){
+                            _self.accountTip='此账号已经存在';
+                            _self.userPwd='';
+                            _self.dataReady=false;
+                        }
+                    }
+                })
+                if(this.dataReady==true){
+                    $.post("/addUser.do", $('#frm').serialize(),function (res) {
+                        if(res.code==0){
+                            alert("添加成功");
+                            $('#homePage').load('/goShowUsers');
+                        }else{
+                            alert("添加失败："+res.message);
+                        }
+                    })
+
+                }
+            }
+        },
+        beforeCreate:function () {
+            var _self = this;
+            $.post("/findAllRole.do",function(res){
+                if(res.code!=0){
+                    $("#addUserDiv").empty()
+                    $("#addUserDiv").append('<p>没有获取到职位信息，请稍后再试</p>')
+                }
+                _self.roles = res.data;
+            });
+        }
+    });
+</script>
+</html>
