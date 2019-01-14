@@ -1,6 +1,6 @@
 package com.chao.platform.dao;
 
-import com.chao.dtw.entity.UserBase;
+import com.chao.platform.entity.UserBase;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 
