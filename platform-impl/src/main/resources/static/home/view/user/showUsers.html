@@ -68,7 +68,8 @@
         methods:{
             //修改用户
             updateUser:function (userid) {
-                $('#homePage').load('user/updateUser.html?userid='+userid);
+                home.updateUserId = userid;
+                $('#homePage').load('user/updateUser.html');
             },
             //分页
             change:function (n) {
@@ -79,12 +80,23 @@
             deleteUser:function (userid) {
                 var _self = this;
                 if(confirm("确认删除？")){
-                    $.post("/deleteUser.do",{userid:userid},function (res) {
-                        if(res.code==0){
-                            _self.change(_self.currentPage);
-                            _self.totalCount--;
-                        }else {
-                            alert("删除失败:"+res.message);
+                    $.ajax({
+                        url: "/userInfo",
+                        type:"delete",
+                        data:{
+                            userid:userid
+                        },
+                        async: false,
+                        success: function (res) {
+                            if(res.code==0){
+                                _self.change(_self.currentPage);
+                                _self.totalCount--;
+                            }else {
+                                alert("删除失败:"+res.message);
+                            }
+                        },
+                        error: function () {
+                            alert("未知错误！")
                         }
                     })
                 }

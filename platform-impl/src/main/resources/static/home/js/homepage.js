@@ -11,7 +11,11 @@ $(function () {
 });
 function addUser(){
     $('#homePage').load('./user/addUser.html');
-};
+}
 function showUsers() {
     $('#homePage').load('./user/showUsers.html');
 }
+
+var home = {
+    updateUserId : null
+};

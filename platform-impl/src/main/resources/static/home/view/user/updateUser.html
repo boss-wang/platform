@@ -136,7 +136,7 @@
         beforeCreate:function () {
             var _self = this;
             // var userid = [[${userid}]];
-            var userid = $.getUrlParam("userid")
+            var userid = home.updateUserId;
             $.get("/getAllRole",function(res){
                 if(res.code!=0){
                     $("#addUserDiv").empty()

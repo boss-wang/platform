@@ -105,7 +105,7 @@ public class UserController {
         return ResultUtil.saveResult(ResultEnum.SUCCESS,cnt);
     }
 
-    @PostMapping ("/deleteUser.do")
+    @DeleteMapping ("/userInfo")
     public Result deleteUser(String userid)
     {
         if (userService.deleteUser(userid))
