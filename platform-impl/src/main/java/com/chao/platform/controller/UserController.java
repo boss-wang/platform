@@ -2,11 +2,12 @@ package com.chao.platform.controller;
 
 import com.chao.platform.entity.Role;
 import com.chao.platform.entity.UserBase;
-import com.chao.platform.model.Result;
+import com.chao.platform.model.CommonRsp;
+import com.chao.platform.model.ListRsp;
 import com.chao.platform.model.ResultEnum;
 import com.chao.platform.service.UserService;
-import com.chao.platform.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,118 +20,105 @@ public class UserController {
     private UserService userService;
 
     //用户登录
-    @GetMapping (value = "/login")
+    @PostMapping (value = "/login")
     @ResponseBody
-    public Result login(HttpServletRequest req,
-                        @RequestParam(value = "userName",required = true) String userName,
-                        @RequestParam(value = "password",required = true) String password)
+    public CommonRsp login(HttpServletRequest req,
+                           @RequestParam(value = "userName",required = true) String userName,
+                           @RequestParam(value = "password",required = true) String password)
     {
-        UserBase userFind = userService.findUser(userName );
+        UserBase userFind = userService.findUser(userName);
         //没有找到用户
-        if (userFind==null)
+        if (userFind == null)
         {
-            return ResultUtil.saveResult(ResultEnum.NO_RESULT);
+            return new CommonRsp(ResultEnum.NO_RESULT);
         }
+
+        //密码错误
         if (!password.equals(userFind.getUserpwd()))
         {
-            //密码错误
-            return ResultUtil.saveResult(ResultEnum.PWD_ERROR);
+            return new CommonRsp(ResultEnum.PWD_ERROR);
         }
+
         //登录成功
         if (userFind.getUserstatus() == 1)
         {
-            req.getSession().setAttribute("isLogin","true");
-            req.getSession().setAttribute("userId",userFind.getUserid());
-            return ResultUtil.saveResult(ResultEnum.SUCCESS);
+            return new CommonRsp(ResultEnum.SUCCESS,userFind.getUserid());
         }
-        return ResultUtil.saveResult(ResultEnum.FREEZE_ERROR);
+
+        return new CommonRsp(ResultEnum.FREEZE_ERROR);
     }
 
-    @PostMapping (value = "/addUser.do")
-    public Result addUser(UserBase user)
+    @PutMapping (value = "/userInfo")
+    public CommonRsp addUser(UserBase user)
     {
-        if (userService.addUser(user))
+        UserBase userFind = userService.findUser(user.getUseraccount());
+
+        if(userFind != null)
         {
-            return ResultUtil.saveResult(ResultEnum.SUCCESS);
-        }
-        return ResultUtil.saveResult(ResultEnum.UNKNOW_ERROR);
-    }
-
-    /**
-     * 用于添加员工前，确认账号不存在
-     * @param useraccount
-     * @return
-     */
-    @RequestMapping (value = "/existAccount.do")
-    public Result existAccount(String useraccount)
-    {
-        UserBase userFind = userService.findUser(useraccount);
-
-        if(userFind==null)
-        {
-            return ResultUtil.saveResult(ResultEnum.NO_RESULT);
+            return new CommonRsp(ResultEnum.ACCOUNT_EXISTS);
         }
 
-        return ResultUtil.saveResult(ResultEnum.SUCCESS);
+        userService.addUser(user);
+
+        return new CommonRsp(ResultEnum.SUCCESS);
     }
 
-    @PostMapping ("/showAllUsers.do")
-    public Result showAllUsers(Integer currentPage, Integer pageSize)
+    @GetMapping ("/userInfoList")
+    public CommonRsp showUserList(Integer currentPage, Integer pageSize)
     {
-        currentPage = currentPage==null || currentPage<1?1:currentPage;
-        pageSize = pageSize==null?6:pageSize;
+        currentPage = currentPage==null || currentPage < 1 ? 1 : currentPage;
+
+        pageSize = pageSize == null ? 6 : pageSize;
+
         List<UserBase> userList = userService.findAllUsers(currentPage,pageSize);
+
+        Integer totalCount = userService.userCount();
+
         if (userList == null || userList.size() == 0)
         {
-            return ResultUtil.saveResult(ResultEnum.NO_RESULT);
+            return new ListRsp(ResultEnum.NO_RESULT, totalCount);
         }
-        return ResultUtil.saveResult(ResultEnum.SUCCESS,userList);
+
+        return new ListRsp(ResultEnum.SUCCESS, userList, totalCount);
+
     }
 
-    @GetMapping ("/getUserInfo")
-    public Result findUserById(String userid)
+    @GetMapping ("/userInfo")
+    public CommonRsp findUserById(String userid)
     {
         UserBase userFind = userService.findUserById(userid);
-        if(userFind==null)
-        {
-            return ResultUtil.saveResult(ResultEnum.NO_RESULT);
-        }
-        return ResultUtil.saveResult(ResultEnum.SUCCESS,userFind);
-    }
 
-    @GetMapping ("/userCount.do")
-    public Result userCount()
-    {
-        Integer cnt = userService.userCount();
-        return ResultUtil.saveResult(ResultEnum.SUCCESS,cnt);
+        if(userFind == null)
+        {
+            return new CommonRsp(ResultEnum.NO_RESULT);
+        }
+
+        return new CommonRsp(ResultEnum.SUCCESS, userFind);
     }
 
     @DeleteMapping ("/userInfo")
-    public Result deleteUser(String userid)
+    public CommonRsp deleteUser(String userid)
     {
         if (userService.deleteUser(userid))
         {
-            return ResultUtil.saveResult(ResultEnum.SUCCESS);
+            return new CommonRsp(ResultEnum.SUCCESS);
         }
 
-        return ResultUtil.saveResult(ResultEnum.UNKNOW_ERROR);
+        return new CommonRsp(ResultEnum.UNKNOW_ERROR);
+
     }
 
-    @GetMapping ("/getAllRole")
-    public Result findAllRole()
+    @GetMapping ("/roleList")
+    public CommonRsp findAllRole()
     {
         List<Role> roleList = userService.findAllRole();
 
-        if (roleList==null)
+        if (CollectionUtils.isEmpty(roleList))
         {
-            return ResultUtil.saveResult(ResultEnum.NO_RESULT);
+            return new CommonRsp(ResultEnum.NO_RESULT);
         }
 
-        if (roleList.size()>0)
-        {
-            return ResultUtil.saveResult(ResultEnum.SUCCESS,roleList);
-        }
+        return new CommonRsp(ResultEnum.SUCCESS, roleList);
 
-        return ResultUtil.saveResult(ResultEnum.UNKNOW_ERROR);
     }
 }

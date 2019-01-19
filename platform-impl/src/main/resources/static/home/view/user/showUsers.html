@@ -61,25 +61,30 @@
             currentPage:1
         },
         computed:{
-            totalPage:function(){
+            totalPage:function()
+            {
                 return this.totalCount%this.pageSize==0?parseInt(this.totalCount/this.pageSize):parseInt(this.totalCount/this.pageSize)+1;
             }
         },
         methods:{
             //修改用户
-            updateUser:function (userid) {
+            updateUser:function (userid)
+            {
                 home.updateUserId = userid;
                 $('#homePage').load('user/updateUser.html');
             },
             //分页
-            change:function (n) {
+            change:function (n)
+            {
                 this.currentPage = n;
                 this.showUsers(this);
             },
             //删除用户
-            deleteUser:function (userid) {
+            deleteUser:function (userid)
+            {
                 var _self = this;
-                if(confirm("确认删除？")){
+                if (confirm("确认删除？"))
+                {
                     $.ajax({
                         url: "/userInfo",
                         type:"delete",
@@ -98,31 +103,47 @@
                         error: function () {
                             alert("未知错误！")
                         }
-                    })
+                    });
                 }
             }
         },
-        beforeCreate:function () {
+        beforeCreate:function ()
+        {
             var _self = this;
             _self.pageSize = 6;
-            $.post("/showAllUsers.do",{pageSize:_self.pageSize},function (res) {
-                _self.result = res;
-                if(res.code==0){
-                    _self.userList = res.data;
+            $.get
+            (
+                "/userInfoList",
+                {pageSize:_self.pageSize},
+                function (res)
+                {
+                    _self.result = res;
+                    if (res.code == 0)
+                    {
+                        _self.userList = res.data;
+                    }
+                    _self.totalCount = res.totalCount;
                 }
-            });
-            $.get("/userCount.do",function (res) {
-                _self.totalCount = res.data;
-            });
+            );
         }
     });
-    Vue.prototype.showUsers = function (_self) {
-        $.post("/showAllUsers.do",{currentPage:_self.currentPage,pageSize:_self.pageSize},function (res) {
-            _self.result = res;
-            if(res.code==0){
-                _self.userList = res.data;
+
+    Vue.prototype.showUsers = function (_self)
+    {
+        $.get
+        (
+            "/userInfoList",
+            {currentPage:_self.currentPage,pageSize:_self.pageSize},
+            function (res)
+            {
+                 _self.result = res;
+
+                if (res.code == 0)
+                {
+                    _self.userList = res.data;
+                }
             }
-        });
+        );
     }
 </script>
 </html>

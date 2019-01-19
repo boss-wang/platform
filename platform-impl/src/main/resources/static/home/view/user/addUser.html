@@ -93,54 +93,61 @@
         methods:{
             addUser:function () {
                 var _self = this;
-                _self.accountTip='';
-                _self.nameTip='';
-                _self.pwdTip='';
-                _self.dataReady=true;
-                if(!_self.userAccount){
-                    _self.accountTip='请输入员工账号';
-                    _self.dataReady=false;
+                _self.accountTip = '';
+                _self.nameTip = '';
+                _self.pwdTip = '';
+                _self.dataReady = true;
+                if (!_self.userAccount)
+                {
+                    _self.accountTip = '请输入员工账号';
+                    _self.dataReady = false;
                 }
-                if(!_self.userName){
-                    _self.nameTip='请输入员工姓名';
-                    _self.dataReady=false;
+                if (!_self.userName)
+                {
+                    _self.nameTip = '请输入员工姓名';
+                    _self.dataReady = false;
                 }
-                if(!_self.userPwd){
-                    _self.pwdTip='请输入密码';
-                    _self.dataReady=false;
+                if (!_self.userPwd)
+                {
+                    _self.pwdTip = '请输入密码';
+                    _self.dataReady = false;
                 }
-                $.ajax({
-                    url: "/existAccount.do",
-                    type:"post",
-                    data:{
-                        useraccount:_self.userAccount
-                    },
-                    async: false,
-                    success:function (res) {
-                        if(res.code!=1){
-                            _self.accountTip='此账号已经存在';
-                            _self.userPwd='';
-                            _self.dataReady=false;
-                        }
-                    }
-                })
-                if(this.dataReady==true){
-                    $.post("/addUser.do", $('#frm').serialize(),function (res) {
-                        if(res.code==0){
-                            alert("添加成功");
-                            $('#homePage').load('/goShowUsers');
-                        }else{
-                            alert("添加失败："+res.message);
-                        }
-                    })
 
+
+                if(this.dataReady == true)
+                {
+                    $.ajax({
+                        url: "/userInfo",
+                        type:"put",
+                        data: $('#frm').serialize(),
+                        async: false,
+                        success:function (res)
+                        {
+                            if (res.code == 0)
+                            {
+                                alert("添加成功");
+                                $('#homePage').load('./user/showUsers.html');
+                            }
+                            else if (res.code == 1)
+                            {
+                                _self.accountTip = '此账号已经存在';
+                                _self.userPwd = '';
+                            }
+                            else
+                            {
+                                alert("添加失败："+res.message);
+                            }
+                        }
+                    });
                 }
             }
         },
-        beforeCreate:function () {
+        beforeCreate:function ()
+        {
             var _self = this;
-            $.post("/findAllRole.do",function(res){
-                if(res.code!=0){
+            $.get("/roleList",function(res){
+                if(res.code !=0 )
+                {
                     $("#addUserDiv").empty()
                     $("#addUserDiv").append('<p>没有获取到职位信息，请稍后再试</p>')
                 }

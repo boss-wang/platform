@@ -137,24 +137,35 @@
             var _self = this;
             // var userid = [[${userid}]];
             var userid = home.updateUserId;
-            $.get("/getAllRole",function(res){
-                if(res.code!=0){
-                    $("#addUserDiv").empty()
-                    $("#addUserDiv").append('<p>没有获取到职位信息，请稍后再试</p>')
+            $.get(
+                "/roleList",
+                function(res)
+                {
+                    if (res.code != 0)
+                    {
+                        $("#addUserDiv").empty()
+                        $("#addUserDiv").append('<p>没有获取到职位信息，请稍后再试</p>')
+                    }
+                    _self.roles = res.data;
                 }
-                _self.roles = res.data;
-            });
-            $.get("/getUserInfo?userid="+userid,function(res){
-                if(res.code!=0){
-                    $("#addUserDiv").empty()
-                    $("#addUserDiv").append('<p>没有找到此用户</p>')
-                }else {
-                    _self.userAccount = res.data.useraccount;
-                    _self.userName = res.data.username;
-                    _self.userSex = res.data.usersex;
-                    _self.roleId = res.data.roleid;
+            );
+
+            $.get(
+                "/userInfo?userid="+userid,
+                function(res)
+                {
+                    if (res.code != 0)
+                    {
+                        $("#addUserDiv").empty()
+                        $("#addUserDiv").append('<p>没有找到此用户</p>')
+                    } else {
+                        _self.userAccount = res.data.useraccount;
+                        _self.userName = res.data.username;
+                        _self.userSex = res.data.usersex;
+                        _self.roleId = res.data.roleid;
+                    }
                 }
-            });
+            );
         }
     });
 </script>
