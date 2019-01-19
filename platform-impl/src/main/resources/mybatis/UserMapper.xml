@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.chao.platform.dao.UserMapper">
+
+    <select id="findAllUsers" resultType="UserBase">
+        SELECT
+            user_base.userId,
+            user_base.userAccount,
+            user_base.userName,
+            user_base.userSex,
+            user_base.roleId,
+            role.roleName
+        FROM user_base
+        LEFT JOIN role
+        ON user_base.roleId = role.roleId
+        WHERE user_base.userStatus=1
+        ORDER BY roleId DESC,userName
+        LIMIT ${startRow},${pageSize}
+    </select>
+    <select id="findUserById" resultType="UserBase">
+        SELECT
+        user_base.userId,
+        user_base.userAccount,
+        user_base.userName,
+        user_base.userSex,
+        user_base.roleId
+        FROM user_base
+        WHERE user_base.userStatus=1 and user_base.userId = #{userid}
+    </select>
+
+    <select id="userCount" resultType="Integer">
+        SELECT COUNT(1) FROM user_base WHERE userStatus=1
+    </select>
+
+    <update id="deleteUser">
+        UPDATE user_base SET userStatus = 0 WHERE userId= #{userid}
+    </update>
+</mapper>

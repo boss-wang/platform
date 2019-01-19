@@ -8,7 +8,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 
-@Entity@Getter
+@Entity
+@Getter
 @Setter
 @ToString
 public class UserBase {

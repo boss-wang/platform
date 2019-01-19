@@ -64,6 +64,17 @@
 </body>
 <script th:inline="javascript">
 
+    $.getUrlParam = function (name)
+    {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null)
+        {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
     var roleVM = new Vue({
         el: '#updateUserDiv',
         data:{
@@ -124,15 +135,16 @@
         },
         beforeCreate:function () {
             var _self = this;
-            var userid = [[${userid}]];
-            $.post("/findAllRole.do",function(res){
+            // var userid = [[${userid}]];
+            var userid = $.getUrlParam("userid")
+            $.get("/getAllRole",function(res){
                 if(res.code!=0){
                     $("#addUserDiv").empty()
                     $("#addUserDiv").append('<p>没有获取到职位信息，请稍后再试</p>')
                 }
                 _self.roles = res.data;
             });
-            $.post("/findUserById.do",{userid:userid},function(res){
+            $.get("/getUserInfo?userid="+userid,function(res){
                 if(res.code!=0){
                     $("#addUserDiv").empty()
                     $("#addUserDiv").append('<p>没有找到此用户</p>')

@@ -5,12 +5,14 @@ spring:
     druid:
       password: Dtw10781
       username: chao
-      url: jdbc:mysql:///platformdb
-      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://111.231.244.96:3306/platformdb?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false
+      driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: true
+  main:
+    allow-bean-definition-overriding: true
 mybatis:
   mapper-locations: classpath:mybatis/*.xml
   type-aliases-package: com.chao.platform.entity

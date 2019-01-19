@@ -68,7 +68,7 @@
         methods:{
             //修改用户
             updateUser:function (userid) {
-                $('#homePage').load('/goUpdateUser',{userid:userid});
+                $('#homePage').load('user/updateUser.html?userid='+userid);
             },
             //分页
             change:function (n) {

@@ -57,9 +57,9 @@
             $("#password").focus();
         }else{
             $.ajax({
-                type:"post",
-                url:"checkLogin.do",
-                data:{
+                type : "get",
+                url : "login",
+                data : {
                     userName:$("#userName").val(),
 					password:$("#password").val()
                 },
@@ -72,7 +72,7 @@
                         $("#tip")[0].innerText= res.message;
                         $("#password").focus();
                     }else if(res.code==0){
-                        window.location.replace("/home");
+                        window.location.replace("home/view/home.html");
                     }
                 }
             });
