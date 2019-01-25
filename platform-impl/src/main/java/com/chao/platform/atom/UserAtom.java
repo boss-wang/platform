@@ -26,7 +26,7 @@ public class UserAtom
 
     public Boolean addUser(UserBase userBase)
     {
-        if(userDao.save(userBase)!=null)
+        if (userDao.save(userBase) != null)
         {
             return true;
         };
@@ -48,7 +48,8 @@ public class UserAtom
         return userMapper.userCount();
     }
 
-    public Boolean deleteUser(String userid) {
+    public Boolean deleteUser(String userid)
+    {
         return userMapper.deleteUser(userid) > 0;
     }
 }

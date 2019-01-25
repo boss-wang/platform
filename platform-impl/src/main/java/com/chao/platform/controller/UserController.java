@@ -7,17 +7,35 @@ import com.chao.platform.model.ListRsp;
 import com.chao.platform.model.ResultEnum;
 import com.chao.platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Resource
+    private RedisTemplate<String,String> redisTemplate;
+
+    @GetMapping("/testRedis")
+    public String testRedis()
+    {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+
+        ops.set("name","yun",60, TimeUnit.SECONDS);
+
+        return ops.get("name");
+
+    }
 
     //用户登录
     @PostMapping (value = "/login")

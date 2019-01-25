@@ -13,6 +13,19 @@ spring:
     show-sql: true
   main:
     allow-bean-definition-overriding: true
+  redis:
+    database: 0
+    host: 172.16.223.129
+    port: 6379
+    password: Dtw10781
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+    timeout: 1000
 mybatis:
   mapper-locations: classpath:mybatis/*.xml
   type-aliases-package: com.chao.platform.entity
+
