@@ -11,6 +11,6 @@ public class WashTask implements Job
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException
     {
-        log.info("开始执行任务");
+        System.out.println("开始执行任务");
     }
 }
