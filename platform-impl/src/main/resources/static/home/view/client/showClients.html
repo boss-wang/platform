@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="showClientsDiv" class="container" style="width: 80%">
+    <h2 class="text-center mb-3">客户列表</h2>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>公司抬头</th>
+            <th>公司地址</th>
+            <th>联系人</th>
+            <th>操作栏</th>
+        </tr>
+        </thead>
+        <tbody v-if="result.code==0">
+        <tr v-for="client in clientList" v-bind:id="client.clientId" >
+            <td>{{ client.companyName }}</td>
+            <td>{{ client.companyAddress }}</td>
+            <td>暂无</td>
+            <td>
+                <a style="color: #007BFF;" v-on:click="updateClient(client.clientId)">修改</a>
+                <a style="color: #007BFF;" v-on:click="deleteClient(client.clientId)" class="offset-1">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- 分页 -->
+    <ul class="pagination offset-3 col-6" id="pagination1">
+        <li class="page-item" v-bind:class="{disabled:currentPage<=1}"><a class="page-link" v-on:click="change(1)">首页</a></li>
+        <li class="page-item" v-bind:class="{disabled:currentPage<=1}"><a class="page-link" v-on:click="change(currentPage-1)">上一页</a></li>
+        <li v-for="n in totalPage" v-bind:class="{active:n==currentPage}" class="page-item" v-show="(currentPage<3 && n<=5) || (currentPage>totalPage-2 && n>=totalPage-4) || (currentPage>=3 && currentPage<=totalPage-2 && n<=currentPage+2 && n>=currentPage-2)"><a v-on:click="change(n)" class="page-link" >{{ n }}</a></li>
+        <li class="page-item" v-bind:class="{disabled:currentPage>=totalPage}"><a class="page-link" v-on:click="change(currentPage+1)">下一页</a></li>
+        <li class="page-item" v-bind:class="{disabled:currentPage>=totalPage}"><a class="page-link" v-on:click="change(totalPage)">末页</a></li>
+    </ul>
+    <!-- 查询失败时显示 -->
+    <h4 class="text-center text-muted" v-if="result.code != 0">{{ result.message }}</h4>
+</div>
+</body>
+<script>
+    new Vue({
+        el:'#showClientsDiv',
+        data:{
+            result:'',
+            clientList:'',
+            totalCount:'',
+            pageSize:6,
+            currentPage:1
+        },
+        computed:{
+            totalPage:function()
+            {
+                return this.totalCount%this.pageSize==0?parseInt(this.totalCount/this.pageSize):parseInt(this.totalCount/this.pageSize)+1;
+            }
+        },
+        methods:{
+            //修改客户信息
+            updateClient:function (clientId)
+            {
+                home.updateClientId = clientId;
+                $('#homePage').load('client/updateClient.html');
+            },
+            //分页
+            change:function (n)
+            {
+                this.currentPage = n;
+                this.showClients(this);
+            },
+            //删除客户
+            deleteClient:function (clientId)
+            {
+                var _self = this;
+                if (confirm("确认删除？"))
+                {
+                    $.ajax({
+                        url: "/clientInfo/"+clientId,
+                        type:"delete",
+                        async: false,
+                        success: function (res) {
+                            if(res.code==0){
+                                _self.change(_self.currentPage);
+                                _self.totalCount--;
+                            }else {
+                                alert("删除失败:"+res.message);
+                            }
+                        },
+                        error: function () {
+                            alert("未知错误！")
+                        }
+                    });
+                }
+            }
+        },
+        beforeCreate:function ()
+        {
+            var _self = this;
+            _self.pageSize = 6;
+            $.get
+            (
+                "/clientInfoList",
+                {pageSize:_self.pageSize},
+                function (res)
+                {
+                    _self.result = res;
+                    if (res.code == 0)
+                    {
+                        _self.clientList = res.data;
+                    }
+                    _self.totalCount = res.totalCount;
+                }
+            );
+        }
+    });
+
+    Vue.prototype.showClients = function (_self)
+    {
+        $.get
+        (
+            "/clientInfoList",
+            {currentPage:_self.currentPage,pageSize:_self.pageSize},
+            function (res)
+            {
+                _self.result = res;
+
+                if (res.code == 0)
+                {
+                    _self.clientList = res.data;
+                }
+            }
+        );
+    }
+</script>
+</html>

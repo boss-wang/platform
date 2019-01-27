@@ -1,17 +1,13 @@
 package com.chao.platform.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 public class UserBase {
     @Id
     @GeneratedValue(generator = "uuid")

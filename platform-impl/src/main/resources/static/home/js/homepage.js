@@ -9,13 +9,20 @@ $(function () {
        }
    });
 });
-function addUser(){
-    $('#homePage').load('./user/addUser.html');
+function addUser()
+{
+    $('#homePage').load('user/addUser.html');
 }
-function showUsers() {
-    $('#homePage').load('./user/showUsers.html');
+function showUsers()
+{
+    $('#homePage').load('user/showUsers.html');
+}
+function showClient()
+{
+    $('#homePage').load('client/showClients.html');
 }
 
 var home = {
-    updateUserId : null
+    updateUserId : null,
+    updateClientId:null
 };

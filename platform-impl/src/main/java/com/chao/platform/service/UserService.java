@@ -4,10 +4,15 @@ import com.chao.platform.atom.RoleAtom;
 import com.chao.platform.atom.UserAtom;
 import com.chao.platform.entity.Role;
 import com.chao.platform.entity.UserBase;
+import com.chao.platform.model.ListRsp;
+import com.chao.platform.model.ResultEnum;
+import com.chao.platform.util.PageUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService
@@ -28,19 +33,25 @@ public class UserService
         return userAtom.addUser(userBase);
     }
 
-    public List<UserBase> findAllUsers(Integer currentPage, Integer pageSize)
+    public ListRsp findAllUsers(Integer currentPage, Integer pageSize)
     {
-        Integer startRow = (currentPage-1)*pageSize;
-        return userAtom.findAllUsers(startRow, pageSize);
+        Map<String, Integer> pageMap = PageUtil.transformLimit(currentPage, pageSize);
+
+        List<UserBase> userList = userAtom.findAllUsers(pageMap.get("startRow"), pageMap.get("pageSize"));
+
+        Integer totalCount = userAtom.userCount();
+
+        if (CollectionUtils.isEmpty(userList))
+        {
+            return new ListRsp(ResultEnum.NO_RESULT, totalCount);
+        }
+
+        return new ListRsp(ResultEnum.SUCCESS, userList, totalCount);
     }
 
     public UserBase findUserById(String userid)
     {
         return userAtom.findUserById(userid);
-    }
-
-    public Integer userCount() {
-        return userAtom.userCount();
     }
 
     public Boolean deleteUser(String userid)

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.chao.platform.dao.ClientContactMapper">
+
+    <select id="getClientContact" resultType="ClientContact">
+        select
+        id,
+        name,
+        tel,
+        email,
+        qq
+        from clientcontact
+        where status =1
+        and clientId = #{clientId}
+    </select>
+
+</mapper>

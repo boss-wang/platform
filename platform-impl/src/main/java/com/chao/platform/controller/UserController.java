@@ -82,23 +82,9 @@ public class UserController {
     }
 
     @GetMapping ("/userInfoList")
-    public CommonRsp showUserList(Integer currentPage, Integer pageSize)
+    public ListRsp showUserList(Integer currentPage, Integer pageSize)
     {
-        currentPage = currentPage==null || currentPage < 1 ? 1 : currentPage;
-
-        pageSize = pageSize == null ? 6 : pageSize;
-
-        List<UserBase> userList = userService.findAllUsers(currentPage,pageSize);
-
-        Integer totalCount = userService.userCount();
-
-        if (userList == null || userList.size() == 0)
-        {
-            return new ListRsp(ResultEnum.NO_RESULT, totalCount);
-        }
-
-        return new ListRsp(ResultEnum.SUCCESS, userList, totalCount);
-
+        return userService.findAllUsers(currentPage,pageSize);
     }
 
     @GetMapping ("/userInfo")
