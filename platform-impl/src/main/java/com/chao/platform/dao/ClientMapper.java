@@ -10,4 +10,7 @@ public interface ClientMapper
     List<ClientBase> getClientList(@Param("startRow") Integer startRow, @Param("pageSize") Integer pageSize);
 
     int clientCount();
+
+    ClientBase getClient(@Param("clientId") String clientId);
+
 }

@@ -4,6 +4,7 @@ import com.chao.platform.atom.ClientAtom;
 import com.chao.platform.atom.ClientContactAtom;
 import com.chao.platform.entity.ClientBase;
 import com.chao.platform.entity.ClientContact;
+import com.chao.platform.model.CommonRsp;
 import com.chao.platform.model.ListRsp;
 import com.chao.platform.model.ResultEnum;
 import com.chao.platform.util.PageUtil;
@@ -40,8 +41,27 @@ public class ClientService
         return new ListRsp(ResultEnum.SUCCESS, clientList, totalCount);
     }
 
-    public List<ClientContact> getClientContact(String clientId)
+    public CommonRsp getClient(String clientId)
     {
-        return clientContactAtom.getClientContact(clientId);
+
+        ClientBase client = clientAtom.getClient(clientId);
+
+        if (null == client)
+        {
+            return new CommonRsp(ResultEnum.NO_RESULT);
+        }
+
+        return new CommonRsp(ResultEnum.SUCCESS, client);
+    }
+
+    public CommonRsp getClientContact(String clientId)
+    {
+        List<ClientContact> clientContact = clientContactAtom.getClientContact(clientId);
+
+        if (CollectionUtils.isEmpty(clientContact))
+        {
+            return new CommonRsp(ResultEnum.NO_RESULT);
+        }
+        return new CommonRsp(ResultEnum.SUCCESS, clientContact);
     }
 }

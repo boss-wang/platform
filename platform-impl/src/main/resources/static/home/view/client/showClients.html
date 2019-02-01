@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>查看客户</title>
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+        a:hover{
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
@@ -13,15 +21,17 @@
         <tr>
             <th>公司抬头</th>
             <th>公司地址</th>
-            <th>联系人</th>
-            <th>操作栏</th>
+            <th>联 系 人</th>
+            <th>操 作 栏</th>
         </tr>
         </thead>
         <tbody v-if="result.code==0">
         <tr v-for="client in clientList" v-bind:id="client.clientId" >
             <td>{{ client.companyName }}</td>
             <td>{{ client.companyAddress }}</td>
-            <td>暂无</td>
+            <td>
+                <a style="color: #007BFF;" v-on:click="showContacts(client.clientId)">点击查看</a>
+            </td>
             <td>
                 <a style="color: #007BFF;" v-on:click="updateClient(client.clientId)">修改</a>
                 <a style="color: #007BFF;" v-on:click="deleteClient(client.clientId)" class="offset-1">删除</a>
@@ -58,6 +68,14 @@
             }
         },
         methods:{
+            //查看联系人
+            showContacts: function (clientId)
+            {
+                home.clientDetailId = clientId;
+
+                $('#homePage').load('client/clientsDetail.html');
+            },
+
             //修改客户信息
             updateClient:function (clientId)
             {

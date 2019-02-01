@@ -24,5 +24,6 @@ function showClient()
 
 var home = {
     updateUserId : null,
-    updateClientId:null
+    updateClientId:null,
+    clientDetailId:null
 };

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客户详情</title>
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+        a:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="clientsDetail" class="container" style="width: 80%">
+    <h2 class="text-center mb-3">{{ clientDetail.companyName }}</h2>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>联系电话</th>
+            <th>邮箱</th>
+            <th>QQ</th>
+        </tr>
+        </thead>
+        <tbody v-if="result.code==0">
+        <tr v-for="contact in clientDetail.clientContactList" >
+            <td>{{ contact.name }}</td>
+            <td>{{ contact.tel }}</td>
+            <td>{{ contact.email }}</td>
+            <td>{{ contact.qq }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 查询失败时显示 -->
+    <h4 class="text-center text-muted" v-if="result.code != 0">{{ result.message }}</h4>
+</div>
+</body>
+<script>
+    new Vue({
+        el:'#clientsDetail',
+        data:{
+            result:'',
+            clientDetail:''
+        },
+        methods:{
+
+        },
+        beforeCreate:function ()
+        {
+            var _self = this;
+
+            $.get
+            (
+                "/clientInfo/"+home.clientDetailId,
+                function (res)
+                {
+                    _self.result = res;
+
+                    if (res.code == 0)
+                    {
+                        _self.clientDetail = res.data;
+                    }
+                }
+            );
+        }
+    });
+
+
+</script>
+</html>

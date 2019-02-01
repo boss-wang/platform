@@ -17,4 +17,14 @@
         where status = 1
     </select>
 
+    <select id="getClient" resultType="ClientBase">
+        select
+            clientId,
+            companyName,
+            companyAddress
+        from client
+        where status = 1
+        and clientId = #{clientId}
+    </select>
+
 </mapper>
