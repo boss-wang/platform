@@ -14,4 +14,10 @@
         and clientId = #{clientId}
     </select>
 
+    <update id="deleteContact">
+        update clientcontact
+        set status = 0
+        where id = #{contactId}
+    </update>
+
 </mapper>

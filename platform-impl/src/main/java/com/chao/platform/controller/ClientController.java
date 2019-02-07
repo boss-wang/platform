@@ -3,6 +3,7 @@ package com.chao.platform.controller;
 import com.chao.platform.model.CommonRsp;
 import com.chao.platform.model.ListRsp;
 import com.chao.platform.service.ClientService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,12 @@ public class ClientController
     public CommonRsp findClientInfos(@PathVariable("clientId") String clientId)
     {
         return clientService.getClient(clientId);
+    }
+
+    @DeleteMapping("/client/contactInfo/{contactId}")
+    public CommonRsp deleteClientContactInfo(@PathVariable("contactId") String contactId)
+    {
+        return clientService.deleteContactInfo(contactId);
     }
 
 }

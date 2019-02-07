@@ -8,4 +8,6 @@ import java.util.List;
 public interface ClientContactMapper
 {
     List<ClientContact> getClientContact(@Param("clientId") String clientId);
+
+    int deleteContact(@Param("contactId") String contactId);
 }

@@ -16,6 +16,11 @@
 
 <div id="clientsDetail" class="container" style="width: 80%">
     <h2 class="text-center mb-3">{{ clientDetail.companyName }}</h2>
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">{{ clientDetail.companyAddress }}</div>
+    </div>
+    <br />
     <table class="table table-hover">
         <thead>
         <tr>
@@ -23,6 +28,7 @@
             <th>联系电话</th>
             <th>邮箱</th>
             <th>QQ</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody v-if="result.code==0">
@@ -31,6 +37,9 @@
             <td>{{ contact.tel }}</td>
             <td>{{ contact.email }}</td>
             <td>{{ contact.qq }}</td>
+            <td>
+                <a style="color: #007BFF;" v-on:click="deleteContact($event,contact.id)" class="offset-1">删除</a>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -47,7 +56,30 @@
             clientDetail:''
         },
         methods:{
+            deleteContact: function (e,contactId)
+            {
+                var _self = this;
 
+                if (confirm("确认删除？"))
+                {
+                    $.ajax({
+                        url: "/client/contactInfo/"+contactId,
+                        type:"delete",
+                        async: false,
+                        success: function (res) {
+                            if(res.code==0){
+                                alert("删除成功！");
+                                $(e.currentTarget).parents("tr").remove();
+                            }else {
+                                alert("删除失败:"+res.message);
+                            }
+                        },
+                        error: function () {
+                            alert("未知错误！")
+                        }
+                    });
+                }
+            }
         },
         beforeCreate:function ()
         {

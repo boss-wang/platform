@@ -64,4 +64,14 @@ public class ClientService
         }
         return new CommonRsp(ResultEnum.SUCCESS, clientContact);
     }
+
+    public CommonRsp deleteContactInfo(String contactId)
+    {
+        if (clientContactAtom.deleteContactInfo(contactId))
+        {
+            return new CommonRsp(ResultEnum.SUCCESS);
+        };
+
+        return new CommonRsp(ResultEnum.UNKNOW_ERROR);
+    }
 }

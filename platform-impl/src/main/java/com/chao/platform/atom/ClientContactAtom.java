@@ -19,4 +19,9 @@ public class ClientContactAtom
     {
         return clientContactMapper.getClientContact(clientId);
     }
+
+    public boolean deleteContactInfo(String contactId)
+    {
+        return clientContactMapper.deleteContact(contactId) > 0;
+    }
 }
