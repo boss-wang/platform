@@ -6,9 +6,12 @@
         select
             clientId,
             companyName,
-            companyAddress
+            companyAddress,
+            createTime,
+            modifyTime
         from client
         where status = 1
+        order by createTime desc
         limit #{pageSize} offset #{startRow}
     </select>
 
@@ -21,10 +24,38 @@
         select
             clientId,
             companyName,
-            companyAddress
+            companyAddress,
+            createTime,
+            modifyTime
         from client
         where status = 1
         and clientId = #{clientId}
     </select>
 
+    <insert id="addClient">
+        insert into client
+        (
+        clientId,
+        companyName,
+        companyAddress,
+        createTime,
+        modifyTime,
+        status
+        )
+        values
+        (
+        #{clientBase.clientId},
+        #{clientBase.companyName},
+        #{clientBase.companyAddress},
+        #{clientBase.createTime},
+        #{clientBase.modifyTime},
+        #{clientBase.status}
+        )
+    </insert>
+
+    <update id="deleteClient">
+        update client
+        set status = 0
+        where clientId = #{clientId}
+    </update>
 </mapper>

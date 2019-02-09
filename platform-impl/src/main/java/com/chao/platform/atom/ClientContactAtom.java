@@ -24,4 +24,9 @@ public class ClientContactAtom
     {
         return clientContactMapper.deleteContact(contactId) > 0;
     }
+
+    public void addContactInfo(ClientContact clientContact)
+    {
+        clientContactMapper.addContactInfo(clientContact);
+    }
 }

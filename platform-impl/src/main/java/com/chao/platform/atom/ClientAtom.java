@@ -45,4 +45,14 @@ public class ClientAtom
 
         return clientBase;
     }
+
+    public void addClient(ClientBase clientBase)
+    {
+        clientMapper.addClient(clientBase);
+    }
+
+    public void deleteClient(String clientId)
+    {
+        clientMapper.deleteClient(clientId);
+    }
 }

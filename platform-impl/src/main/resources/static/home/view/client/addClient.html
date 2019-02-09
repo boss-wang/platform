@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        span{
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div id="addClientDiv" class="container" style="width: 60%">
+        <h2 class="text-center mb-3">添加客户</h2>
+        <form id="frm">
+            <div class="row">
+                <div class="input-group mb-3 col-6 offset-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">公司抬头</label>
+                    </div>
+                    <input v-model="companyName" name="companyName" type="text" class="form-control" placeholder="请输入公司抬头" >
+                </div>
+                <div class="col-3">
+                    <span class="text-danger">{{ companyNameTip }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group mb-3 col-6 offset-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">公司地址</label>
+                    </div>
+                    <textarea rows="3" v-model="companyAddress" name="companyAddress" class="form-control" placeholder="请输入公司地址"></textarea>
+                </div>
+                <div class="col-3">
+                    <span class="text-danger">{{ companyAddressTip }}</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-group col-6 offset-3">
+                    <input type="button" class="btn btn-primary col-5" v-on:click="addClient" value="确认添加" />
+                    <input type="reset" class="btn btn-secondary col-5 offset-2 " value="重新填写"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#addClientDiv',
+        data:{
+            companyName:'',
+            companyAddress:'',
+            companyNameTip:'',
+            companyAddressTip:'',
+            dataReady:true
+        },
+        methods:{
+            addClient:function () {
+                var _self = this;
+                _self.companyNameTip = '';
+                _self.companyAddressTip = '';
+                _self.dataReady = true;
+                if (!_self.companyName)
+                {
+                    _self.companyNameTip = '请输入公司抬头';
+                    _self.dataReady = false;
+                }
+                if (!_self.companyAddress)
+                {
+                    _self.companyAddressTip = '请输入公司地址';
+                    _self.dataReady = false;
+                }
+
+                if(this.dataReady == true)
+                {
+                    $.ajax({
+                        url: "/clientInfo",
+                        type:"post",
+                        data: $('#frm').serialize(),
+                        async: false,
+                        success:function (res)
+                        {
+                            if (res.code == 0)
+                            {
+                                alert("添加成功");
+                                $('#homePage').load('client/showClients.html');
+                            }
+                            else if (res.code == 1)
+                            {
+                                _self.companyNameTip = '公司名已经存在';
+                            }
+                            else
+                            {
+                                alert("添加失败："+res.message);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    });
+</script>
+</html>

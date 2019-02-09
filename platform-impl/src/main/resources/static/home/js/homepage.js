@@ -17,6 +17,10 @@ function showUsers()
 {
     $('#homePage').load('user/showUsers.html');
 }
+function addClient()
+{
+    $('#homePage').load('client/addClient.html');
+}
 function showClient()
 {
     $('#homePage').load('client/showClients.html');

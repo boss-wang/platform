@@ -13,4 +13,7 @@ public interface ClientMapper
 
     ClientBase getClient(@Param("clientId") String clientId);
 
+    void addClient(@Param("clientBase") ClientBase clientBase);
+
+    void deleteClient(@Param("clientId") String clientId);
 }

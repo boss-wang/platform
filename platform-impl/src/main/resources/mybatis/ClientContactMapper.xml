@@ -20,4 +20,27 @@
         where id = #{contactId}
     </update>
 
+    <insert id="addContactInfo">
+        insert into clientcontact
+        (
+            id,
+            clientId,
+            name,
+            tel,
+            email,
+            qq,
+            status
+        )
+        values
+        (
+            #{clientContact.id},
+            #{clientContact.clientId},
+            #{clientContact.name},
+            #{clientContact.tel},
+            #{clientContact.email},
+            #{clientContact.qq},
+            #{clientContact.status}
+        )
+    </insert>
+
 </mapper>

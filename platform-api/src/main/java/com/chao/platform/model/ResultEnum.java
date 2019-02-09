@@ -6,7 +6,8 @@ public enum ResultEnum {
     PWD_ERROR(2,"密码错误"),
     UNKNOW_ERROR(-1,"未知错误"),
     FREEZE_ERROR(3,"账号冻结"),
-    NO_RESULT(4,"没有找到内容")
+    NO_RESULT(4,"没有找到内容"),
+    NAME_IS_NULL(5,"姓名为空")
     ;
 
     ResultEnum(Integer code, String msg) {

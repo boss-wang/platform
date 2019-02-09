@@ -14,23 +14,27 @@
 </head>
 <body>
 
-<div id="showClientsDiv" class="container" style="width: 80%">
+<div id="showClientsDiv" class="container">
     <h2 class="text-center mb-3">客户列表</h2>
     <table class="table table-hover">
         <thead>
         <tr>
-            <th>公司抬头</th>
-            <th>公司地址</th>
-            <th>联 系 人</th>
-            <th>操 作 栏</th>
+            <th style="width: 20%;">公司抬头</th>
+            <th style="width: 24%;">公司地址</th>
+            <th style="width: 20%;">创建时间</th>
+            <th style="width: 20%;">最近修改时间</th>
+            <th style="width: 8%;">详 情</th>
+            <th style="width: 8%;">操 作 栏</th>
         </tr>
         </thead>
         <tbody v-if="result.code==0">
         <tr v-for="client in clientList" v-bind:id="client.clientId" >
             <td>{{ client.companyName }}</td>
             <td>{{ client.companyAddress }}</td>
+            <td>{{ client.createTime | timeFormate }}</td>
+            <td>{{ client.modifyTime | timeFormate }}</td>
             <td>
-                <a style="color: #007BFF;" v-on:click="showContacts(client.clientId)">点击查看</a>
+                <a style="color: #007BFF;" v-on:click="showContacts(client.clientId)">查看</a>
             </td>
             <td>
                 <a style="color: #007BFF;" v-on:click="deleteClient(client.clientId)" class="offset-1">删除</a>
@@ -51,6 +55,13 @@
 </div>
 </body>
 <script>
+
+    var padDate=function(va)
+    {
+        va = va < 10 ? '0' + va : va;
+        return va;
+    };
+
     new Vue({
         el:'#showClientsDiv',
         data:{
@@ -110,6 +121,19 @@
                         }
                     });
                 }
+            }
+        },
+        filters:{
+            timeFormate: function (val)
+            {
+                var value=new Date(val);
+                var year=value.getFullYear();
+                var month=padDate(value.getMonth()+1);
+                var day=padDate(value.getDate());
+                var hour=padDate(value.getHours());
+                var minutes=padDate(value.getMinutes());
+                var seconds=padDate(value.getSeconds());
+                return year+'-'+month+'-'+day+' '+hour+':'+minutes+':'+seconds;
             }
         },
         beforeCreate:function ()

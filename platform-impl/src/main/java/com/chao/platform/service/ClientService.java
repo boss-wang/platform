@@ -9,11 +9,14 @@ import com.chao.platform.model.ListRsp;
 import com.chao.platform.model.ResultEnum;
 import com.chao.platform.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class ClientService
@@ -54,6 +57,25 @@ public class ClientService
         return new CommonRsp(ResultEnum.SUCCESS, client);
     }
 
+    public CommonRsp addClient(ClientBase clientBase)
+    {
+        String clientId = UUID.randomUUID().toString().replace("-","");
+        clientBase.setClientId(clientId);
+        clientBase.setStatus(1);
+        clientBase.setCreateTime(new Date());
+        clientBase.setModifyTime(new Date());
+        clientAtom.addClient(clientBase);
+
+        return new CommonRsp(ResultEnum.SUCCESS);
+    }
+
+    public CommonRsp deleteClient(String clientId)
+    {
+        clientAtom.deleteClient(clientId);
+
+        return new CommonRsp(ResultEnum.SUCCESS);
+    }
+
     public CommonRsp getClientContact(String clientId)
     {
         List<ClientContact> clientContact = clientContactAtom.getClientContact(clientId);
@@ -73,5 +95,22 @@ public class ClientService
         };
 
         return new CommonRsp(ResultEnum.UNKNOW_ERROR);
+    }
+
+    public CommonRsp addContactInfo(ClientContact clientContact)
+    {
+        if (StringUtils.isEmpty(clientContact.getName()))
+        {
+            return new CommonRsp(ResultEnum.NAME_IS_NULL);
+        }
+
+
+        String id = UUID.randomUUID().toString().replace("-","");
+        clientContact.setId(id);
+        clientContact.setStatus(1);
+
+        clientContactAtom.addContactInfo(clientContact);
+
+        return new CommonRsp(ResultEnum.SUCCESS);
     }
 }
